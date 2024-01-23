@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:js' as js;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:untitled/view/pages/thankyou_page.dart';
@@ -16,7 +15,7 @@ import '../widgets/printer_dropdown.dart';
 import '../widgets/sharedrive_dropdown.dart';
 
 class MyForm extends StatefulWidget {
-  MyForm({super.key});
+  const MyForm({super.key});
 
   @override
   State<MyForm> createState() => _MyFormState();
@@ -50,28 +49,33 @@ class _MyFormState extends State<MyForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController logn_idController = TextEditingController();
   final TextEditingController email2Controller = TextEditingController();
+  final TextEditingController departmentController = TextEditingController();
+  final TextEditingController rmController = TextEditingController();
 
   static get controller => controller;
 
   void _submitForm() async {
-    final String apiUrl = 'http://172.20.80.20/api/insert_user_form_api.php';
+    final String apiUrl =
+        'http://192.168.1.46/form_creation/action/test.php';
 
     final Map<String, dynamic> data = {
-      'email': '${emailController.text}',
-      'email_id_com': '${email_id_com_Controller.text}',
-      'email_id_net': '${email_id_net_Controller.text}',
-      'ticket_no': '${ticket_noController.text}',
-      'form_no': '${form_noController.text}',
+      'email': emailController.text,
+      'email_id_com': email_id_com_Controller.text,
+      'email_id_net': email_id_net_Controller.text,
+      'ticket_no': ticket_noController.text,
+      'form_no': form_noController.text,
       'employee_type': employee_type,
       'selectedValue': selectedValue,
-      'account_expire': '${account_expireController.text}',
-      'name': '${nameController.text}',
-      'employee_id': '${employee_idController.text}',
-      'designation': '${designationController.text}',
-      'reason': '${reasonController.text}',
-      'email_quota': '${email_quotaController.text}',
-      'email2': '${email2Controller.text}',
-      'login_id': '${logn_idController.text}',
+      'account_expire': account_expireController.text,
+      'name': nameController.text,
+      'employee_id': employee_idController.text,
+      'designation': designationController.text,
+      'reason': reasonController.text,
+      'email_quota': email_quotaController.text,
+      'email2': email2Controller.text,
+      'login_id': logn_idController.text,
+      'department': departmentController.text,
+      'rm': rmController.text,
       'attch_file': attch_file_checkBoxController,
       'leads_team_am': leads_team_am_checkBoxController,
       'manager_till_grp': manager_till_grp_checkBoxController,
@@ -99,7 +103,7 @@ class _MyFormState extends State<MyForm> {
           final result = jsonDecode(response.body);
           print(result);
           ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Record inserted successfully'),
               duration: Duration(seconds: 3),
             ),
@@ -115,7 +119,7 @@ class _MyFormState extends State<MyForm> {
         ScaffoldMessenger.of(context as BuildContext).showSnackBar(
           SnackBar(
             content: Text('Error: ${response.reasonPhrase}'),
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -125,7 +129,7 @@ class _MyFormState extends State<MyForm> {
       ScaffoldMessenger.of(context as BuildContext).showSnackBar(
         SnackBar(
           content: Text('Exception: $e'),
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ),
       );
     }
@@ -155,7 +159,7 @@ class _MyFormState extends State<MyForm> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 3,
                 blurRadius: 5,
-                offset: Offset(0, 3), // Add a drop shadow
+                offset: const Offset(0, 3), // Add a drop shadow
               ),
             ],
           ),
@@ -175,7 +179,7 @@ class _MyFormState extends State<MyForm> {
                           child: buildHeader(
                             'User Creation Form',
                             fontSize: 32.0,
-                            color: Color(0xff5801B7),
+                            color: const Color(0xff5801B7),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -197,7 +201,8 @@ class _MyFormState extends State<MyForm> {
                             children: [
                               buildHeader('Ticket No.'),
                               buildTextField('Ticket No.', 'ticketNo',
-                                  controller: ticket_noController),
+                                  controller: ticket_noController,
+                                  isRequired: true),
                             ],
                           ),
                         ),
@@ -208,7 +213,8 @@ class _MyFormState extends State<MyForm> {
                             children: [
                               buildHeader('Form No.'),
                               buildTextField('Form No.', 'formNo',
-                                  controller: form_noController),
+                                  controller: form_noController,
+                                  isRequired: true),
                             ],
                           ),
                         ),
@@ -281,6 +287,18 @@ class _MyFormState extends State<MyForm> {
                     SizedBox(
                       height: space,
                     ),
+                    buildHeader('Department'),
+                    buildTextField('Department', 'department',
+                        controller: departmentController),
+                    SizedBox(
+                      height: space,
+                    ),
+                    buildHeader('Reporting Manager'),
+                    buildTextField('Reporting Manager', 'reporting manager',
+                        controller: rmController),
+                    SizedBox(
+                      height: space,
+                    ),
                     buildHeader('Resource Access Login Information'),
                     buildTextField('Domain/Login ID', 'domainLoginId',
                         controller: emailController),
@@ -298,72 +316,75 @@ class _MyFormState extends State<MyForm> {
                       height: space,
                     ),
                     buildHeader('Required DL'),
-                LayoutBuilder(
-                  builder: (context,constraints) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        checkbox(
-                          title: "All joiner should be added to- Zyro India Team,",
-                          initValue: zyro_India_Team_checkBoxController,
-                          onChanged: (sts) =>
-                              setState(() => zyro_India_Team_checkBoxController = sts),
-                          width: constraints.maxWidth,
-                        ),
-                        checkbox(
-                          title:
-                          'Any joining for lead till AM - they should be added to the ‘Zyro Leads and above’ DL',
-                          initValue: leads_team_am_checkBoxController,
-                          onChanged: (sts) =>
-                              setState(() =>leads_team_am_checkBoxController = sts),
-                          width: constraints.maxWidth,
-                        ),
-                        checkbox(
-                          title:
-                          'Any joining for Manager till Grp Manager - they should be added to the ‘Zyro Leads and above’ & ‘Zyro Manager and above‘ DL ',
-                          initValue: manager_till_grp_checkBoxController,
-                          onChanged: (sts) =>
-                              setState(() => manager_till_grp_checkBoxController = sts),
-                          width: constraints.maxWidth,
-                        ),
-                        checkbox(
-                          title:
-                          'Any joining for Sr. Manager and above - they should be added to the ‘Zyro Managers and above’ & ‘Zyro Extended leadership’ DL ',
-                          initValue: sr_manager_checkBoxController,
-                          onChanged: (sts) => setState(() => sr_manager_checkBoxController = sts),
-                          width: constraints.maxWidth,
-                        ),
-                        SizedBox(height: 10),
-                        buildHeader('G - Suite'),
-                        checkbox(
-                          title:
-                          'User should be able to send/receive mails to outside MyZyro Network',
-                          initValue: send_recive_checkBoxController,
-                          onChanged: (sts) => setState(() => send_recive_checkBoxController = sts),
-                          width: constraints.maxWidth,
-                        ),
-                        checkbox(
-                          title: 'User should be able to attach files in the emails',
-                          initValue: attch_file_checkBoxController,
-                          onChanged: (sts) => setState(() => attch_file_checkBoxController = sts),
-                          width: constraints.maxWidth,
-                        ),
-                      ],
-                    );
-                  }
-                ),
+                    LayoutBuilder(builder: (context, constraints) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          checkbox(
+                            title:
+                                "All joiner should be added to- Zyro India Team,",
+                            initValue: zyro_India_Team_checkBoxController,
+                            onChanged: (sts) => setState(
+                                () => zyro_India_Team_checkBoxController = sts),
+                            width: constraints.maxWidth,
+                          ),
+                          checkbox(
+                            title:
+                                'Any joining for lead till AM - they should be added to the ‘Zyro Leads and above’ DL',
+                            initValue: leads_team_am_checkBoxController,
+                            onChanged: (sts) => setState(
+                                () => leads_team_am_checkBoxController = sts),
+                            width: constraints.maxWidth,
+                          ),
+                          checkbox(
+                            title:
+                                'Any joining for Manager till Grp Manager - they should be added to the ‘Zyro Leads and above’ & ‘Zyro Manager and above‘ DL ',
+                            initValue: manager_till_grp_checkBoxController,
+                            onChanged: (sts) => setState(() =>
+                                manager_till_grp_checkBoxController = sts),
+                            width: constraints.maxWidth,
+                          ),
+                          checkbox(
+                            title:
+                                'Any joining for Sr. Manager and above - they should be added to the ‘Zyro Managers and above’ & ‘Zyro Extended leadership’ DL ',
+                            initValue: sr_manager_checkBoxController,
+                            onChanged: (sts) => setState(
+                                () => sr_manager_checkBoxController = sts),
+                            width: constraints.maxWidth,
+                          ),
+                          SizedBox(height: space),
+                          buildHeader('G - Suite'),
+                          checkbox(
+                            title:
+                                'User should be able to send/receive mails to outside MyZyro Network',
+                            initValue: send_recive_checkBoxController,
+                            onChanged: (sts) => setState(
+                                () => send_recive_checkBoxController = sts),
+                            width: constraints.maxWidth,
+                          ),
+                          checkbox(
+                            title:
+                                'User should be able to attach files in the emails',
+                            initValue: attch_file_checkBoxController,
+                            onChanged: (sts) => setState(
+                                () => attch_file_checkBoxController = sts),
+                            width: constraints.maxWidth,
+                          ),
+                        ],
+                      );
+                    }),
                     SizedBox(
                       height: space,
                     ),
                     buildHeader(
                         'Resource Access Details Additional to email distribution list(S) - Department Specific'),
                     buildHeader('Printer Access (Specify Printer Location)'),
-                    PrinterDropDown(),
+                    const PrinterDropDown(),
                     SizedBox(
                       height: space,
                     ),
                     buildHeader('Share Drive Access (Open VPN)'),
-                    ShareDriveDropDown(),
+                    const ShareDriveDropDown(),
                     SizedBox(
                       height: space,
                     ),
@@ -404,7 +425,7 @@ class _MyFormState extends State<MyForm> {
                     ),
                     buildHeader(
                         'Within Process Distribution List Membership (Share Drive)'),
-                    MemberShipDriveDropDown(),
+                    const MemberShipDriveDropDown(),
                     buildHeader('To Be Filled By Information Technology'),
                     // buildHeader('Name and Signature of Approving Authority'),
                     // MyFilePickerWidget(),
@@ -416,8 +437,7 @@ class _MyFormState extends State<MyForm> {
                         selectedValue: selectedValue,
                         onChan: (s) {
                           setSelectedValue(s!);
-                        }
-                        ),
+                        }),
                     SizedBox(
                       height: space,
                     ),
@@ -429,7 +449,7 @@ class _MyFormState extends State<MyForm> {
                     ),
                     buildTextField('Email Quota', 'emailQuota',
                         controller: email_quotaController),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10),
@@ -452,8 +472,9 @@ class _MyFormState extends State<MyForm> {
 
                                 if (_fbKey.currentState!.saveAndValidate()) {
                                   print(_fbKey.currentState!.value);
+                                  _submitForm();
                                 }
-                                print(_submitForm);
+                                // print(_submitForm);
                               },
                               style: ButtonStyle(
                                 backgroundColor:
@@ -461,24 +482,21 @@ class _MyFormState extends State<MyForm> {
                                   (Set<MaterialState> states) {
                                     if (states
                                         .contains(MaterialState.hovered)) {
-                                      return const Color(
-                                          0xff5801B7);
+                                      return const Color(0xff5801B7);
                                     }
-                                    return Color(0xffAD46B6);
+                                    return const Color(0xffAD46B6);
                                   },
                                 ),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        10.0),
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
                               ),
                               child: const Text(
                                 'Submit',
-                                style: TextStyle(
-                                    color: Colors.white),
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),

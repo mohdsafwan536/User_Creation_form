@@ -63,7 +63,7 @@ class MyCheckBoxState extends State<MyCheckBox> {
               onChanged: (sts) => setState(() => widget.sr_manager = sts),
               width: constraints.maxWidth,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             buildHeader('G - Suite'),
             checkbox(
               title:
